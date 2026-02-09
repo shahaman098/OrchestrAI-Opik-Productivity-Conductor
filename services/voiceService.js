@@ -4,13 +4,14 @@ require('dotenv').config();
 const ELEVENLABS_API_KEY = process.env.ELEVENLABS_API_KEY;
 const VOICE_ID = process.env.ELEVENLABS_VOICE_ID || '21m00Tcm4TlvDq8ikWAM'; // Default to Rachel
 
-async function generateVoiceReport({ savings, deliveryDate, orderCount }) {
-    const script = `Mission successful. I executed ${orderCount} orders. We saved $${savings} by choosing the bulk pizza. Tracking numbers have been sent.`;
+async function generateVoiceReport({ focusScore, taskCount, totalMinutes }) {
+    const hours = (totalMinutes / 60).toFixed(1);
+    const script = `Schedule optimized. ${taskCount} tasks organized across ${hours} hours. Your focus score is ${focusScore || 85} out of 100. Start with your top priority task and maintain momentum. You've got this.`;
 
-    // Safety: If no API key, return fallback immediately to avoid unnecessary API call attempt
+    // Safety: If no API key, return fallback immediately
     if (!ELEVENLABS_API_KEY) {
         console.warn('ELEVENLABS_API_KEY is missing. Returning fallback.');
-        return { audio: null, text: "Voice unavailable" };
+        return { audio: null, text: script };
     }
 
     try {
@@ -30,7 +31,7 @@ async function generateVoiceReport({ savings, deliveryDate, orderCount }) {
                     'xi-api-key': ELEVENLABS_API_KEY,
                     'Content-Type': 'application/json'
                 },
-                responseType: 'arraybuffer' // Important for audio data
+                responseType: 'arraybuffer'
             }
         );
 
@@ -41,8 +42,7 @@ async function generateVoiceReport({ savings, deliveryDate, orderCount }) {
 
     } catch (error) {
         console.error('Error calling ElevenLabs API:', error.message);
-        // Fallback as requested
-        return { audio: null, text: "Voice unavailable" };
+        return { audio: null, text: script };
     }
 }
 

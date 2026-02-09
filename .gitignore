@@ -26,6 +26,14 @@ frontend/dist/
 .DS_Store
 Thumbs.db
 
+# Python
+__pycache__/
+*.pyc
+evaluation/.opik/
+.opik/
+venv/
+
 # Lock files (optional - remove if you want to track them)
 # package-lock.json
 # frontend/package-lock.json
+.vercel

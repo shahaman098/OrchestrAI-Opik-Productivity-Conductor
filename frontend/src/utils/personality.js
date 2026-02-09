@@ -1,141 +1,103 @@
-// Fun personality responses based on user choices and system state
-export const getPersonalityComment = (people, budget, days, strategy) => {
+// Productivity-themed personality responses
+export const getPersonalityComment = (hours, energy, strategy, goals) => {
     const comments = {
-        // Budget-related sass
-        richMode: [
-            "Woah there, Mr. Moneybags! 💰",
-            "Someone's feeling generous today!",
-            "Budget? More like 'No budget!' 🚀",
-            "Are you throwing a party or launching a startup? 💎"
+        marathon: [
+            "12+ hours? That's a serious grind day! Let's make it count.",
+            "Marathon mode activated. Pace yourself!",
+            "Long day ahead - the agents will optimize every minute.",
         ],
-        brokeMode: [
-            "Ramen budget detected 🍜",
-            "Living on the edge, I see...",
-            "Budget so tight it squeaks! 😅",
-            "Penny-pinching mode: ACTIVATED 💸"
+        shortDay: [
+            "Short window? Let's focus on what matters most.",
+            "Limited time = ruthless prioritization.",
+            "Quality over quantity today!",
         ],
-
-        // People-related
-        massiveEvent: [
-            "That's basically a small army! 🎖️",
-            "Hope you ordered extra pizza! 🍕🍕🍕",
-            "200 nerds in one room? RIP WiFi 📡",
-            "Time to rent a stadium! 🏟️"
+        highEnergy: [
+            "High energy detected! Let's tackle the hard stuff first.",
+            "Peak performance mode - time to crush it!",
+            "All systems at maximum capacity!",
         ],
-        smallEvent: [
-            "Cozy gathering mode activated! ☕",
-            "Small but mighty! 💪",
-            "Elite squad vibes 🎯",
-            "Quality over quantity! ✨"
+        lowEnergy: [
+            "Low energy day? We'll keep it manageable.",
+            "Rest is productive too. Let's be strategic.",
+            "Smart scheduling for a low-key day.",
         ],
-
-        // Days/Time-related
-        panicMode: [
-            "🚨 PANIC MODE ENGAGED! 🚨",
-            "1 day? Are you serious?! 😱",
-            "Someone forgot to plan ahead...",
-            "Hold my coffee, we're going FAST ⚡"
+        deepFocus: [
+            "Deep focus mode: fewer tasks, deeper work.",
+            "Eliminating distractions. Single-tasking activated.",
+            "Deep work protocol engaged.",
         ],
-        chillMode: [
-            "Taking it slow and steady 🐢",
-            "We've got all the time in the world! 🌙",
-            "Relax mode: Planning like a pro 😎",
-            "No rush, no stress! ☕"
+        manyGoals: [
+            "That's an ambitious list! Let's prioritize ruthlessly.",
+            "Lots of goals - the agents will find the optimal path.",
+            "Big agenda detected. Time to orchestrate!",
         ],
-
-        // Strategy combo reactions
-        speedAndBroke: [
-            "Fast AND cheap? Pick a struggle! 😂",
-            "You want miracles on a budget? Bold. 🎲",
-            "Speed costs money... but let's try! 💨"
-        ],
-        richAndSlow: [
-            "Money to burn and all the time? Living the dream! 🌟",
-            "Premium planning mode activated 💎",
-            "Slow down there, perfectionist! 🎨"
-        ],
-
-        // General encouragement
         balanced: [
-            "Perfectly balanced, as all things should be ⚖️",
-            "Smart choices! This should work beautifully 🎯",
-            "Goldilocks mode: Just right! 🐻",
-            "The sweet spot detected! 🎪"
+            "Balanced day ahead. Let's optimize it!",
+            "The agents are ready to build your perfect schedule.",
+            "Enter your goals and let the AI orchestra play.",
+            "5 agents, 1 mission: your most productive day.",
         ]
     };
 
-    // Determine which comment to show
-    if (days === 1) return comments.panicMode[Math.floor(Math.random() * comments.panicMode.length)];
-    if (days >= 7) return comments.chillMode[Math.floor(Math.random() * comments.chillMode.length)];
-    if (budget >= 5000) return comments.richMode[Math.floor(Math.random() * comments.richMode.length)];
-    if (budget <= 1000) return comments.brokeMode[Math.floor(Math.random() * comments.brokeMode.length)];
-    if (people >= 100) return comments.massiveEvent[Math.floor(Math.random() * comments.massiveEvent.length)];
-    if (people <= 25) return comments.smallEvent[Math.floor(Math.random() * comments.smallEvent.length)];
-    if (strategy === 'speed' && budget <= 2000) return comments.speedAndBroke[Math.floor(Math.random() * comments.speedAndBroke.length)];
-    if (budget >= 5000 && days >= 7) return comments.richAndSlow[Math.floor(Math.random() * comments.richAndSlow.length)];
+    const goalCount = goals ? goals.split(/[,\n]+/).filter(g => g.trim()).length : 0;
+
+    if (hours >= 12) return comments.marathon[Math.floor(Math.random() * comments.marathon.length)];
+    if (hours <= 4) return comments.shortDay[Math.floor(Math.random() * comments.shortDay.length)];
+    if (energy === 'high') return comments.highEnergy[Math.floor(Math.random() * comments.highEnergy.length)];
+    if (energy === 'low') return comments.lowEnergy[Math.floor(Math.random() * comments.lowEnergy.length)];
+    if (strategy === 'deep_focus') return comments.deepFocus[Math.floor(Math.random() * comments.deepFocus.length)];
+    if (goalCount >= 5) return comments.manyGoals[Math.floor(Math.random() * comments.manyGoals.length)];
 
     return comments.balanced[Math.floor(Math.random() * comments.balanced.length)];
 };
 
 export const getAgentQuip = (agentName) => {
     const quips = {
-        PLANNER: [
-            "Crunching numbers like a boss...",
-            "Planning world domination... I mean, your event!",
-            "Math wizard at work 🧙‍♂️",
-            "Calculating the impossible..."
+        DECOMPOSER: [
+            "Breaking goals into bite-sized tasks...",
+            "Analyzing your objectives...",
+            "Decomposition in progress...",
         ],
-        INVENTORY: [
-            "Scanning the supply matrix...",
-            "Hunting for deals like a pro!",
-            "Inventory wizard summoned! 🔮",
-            "Checking all the shelves..."
+        PRIORITIZER: [
+            "Ranking by urgency and importance...",
+            "Applying Eisenhower matrix...",
+            "Finding the critical path...",
         ],
-        LOGIC: [
-            "Logic circuits firing! ⚡",
-            "Running the algorithms...",
-            "Computing optimal paths...",
-            "Beep boop... making smart choices! 🤖"
+        ESTIMATOR: [
+            "Calculating time requirements...",
+            "Estimating effort levels...",
+            "Crunching the numbers...",
         ],
-        FINANCE: [
-            "Money talks, I listen 💰",
-            "Balancing those books!",
-            "Budget guardian activated 🛡️",
-            "Cha-ching! Counting dollars..."
+        SCHEDULER: [
+            "Building time blocks...",
+            "Optimizing your calendar...",
+            "Arranging the perfect day...",
         ],
-        STRATEGY: [
-            "Master plan in progress...",
-            "Strategic genius mode ON! 🎯",
-            "Orchestrating the perfect plan...",
-            "Big brain time! 🧠"
+        COACH: [
+            "Crafting your productivity brief...",
+            "Analyzing schedule quality...",
+            "Preparing motivational insights...",
         ]
     };
 
-    const agent = agentName.replace('_AGENT', '').replace('_BOT', '').replace('_CORE', '').replace('_OFFICER', '');
-    return quips[agent]?.[Math.floor(Math.random() * (quips[agent]?.length || 1))] || "Working hard...";
+    return quips[agentName]?.[Math.floor(Math.random() * (quips[agentName]?.length || 1))] || "Processing...";
 };
 
 export const getLoadingQuip = () => {
     const quips = [
-        "Teaching robots to shop... 🤖",
-        "Negotiating with the supply chain gods...",
-        "Asking AI nicely for help...",
-        "Consulting the ancient scrolls of logistics...",
-        "Brewing the perfect plan... ☕",
-        "Waking up the robot squad...",
-        "Initializing maximum efficiency mode...",
-        "Summoning the deal hunters... 🎯"
+        "5 AI agents standing by...",
+        "Ready to orchestrate your day...",
+        "Neural link initialized...",
+        "Productivity pipeline ready...",
+        "Enter your goals to begin...",
+        "Your AI productivity team awaits...",
     ];
     return quips[Math.floor(Math.random() * quips.length)];
 };
 
-export const getCheckoutQuip = (totalCost, budget) => {
-    const saved = budget - totalCost;
-    const percentSaved = ((saved / budget) * 100).toFixed(0);
-
-    if (percentSaved >= 50) return `🎉 Holy savings! You're a genius! Saved ${percentSaved}%!`;
-    if (percentSaved >= 30) return `💰 Nice! Saved ${percentSaved}% like a pro!`;
-    if (percentSaved >= 10) return `✨ Not bad! ${percentSaved}% savings unlocked!`;
-    if (saved > 0) return `👍 Every dollar counts! Saved ${percentSaved}%!`;
-    return `🎯 Spent it all perfectly! Budget master!`;
+export const getCheckoutQuip = (focusScore) => {
+    if (focusScore >= 90) return "Peak productivity plan! You're going to crush it!";
+    if (focusScore >= 75) return "Solid schedule! Well-optimized for your constraints.";
+    if (focusScore >= 60) return "Good plan with room to breathe.";
+    return "Conservative schedule - sometimes less is more!";
 };

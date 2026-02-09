@@ -1,61 +1,93 @@
 # OrchestrAI
 
-AI shopping agent that discovers, ranks, and checks out products across multiple retailers in one conversation.
+AI Productivity Orchestrator that uses 5 specialized AI agents to break down your goals, prioritize tasks, estimate time, build an optimized daily schedule, and coach you -- all with full Opik observability and evaluation.
 
-## Hack-Nation Hackathon - Challenge 11: Agentic Commerce
+## Ship Your Best Self Hackathon 2026
 
-### Problem & Challenge
+**Tracks:** Productivity & Work Habits + Best Use of Opik
 
-Online shopping is fragmented — buying from multiple retailers requires manually comparing prices, checking delivery times, and completing separate checkouts at each store, wasting hours on repetitive tasks.
+### Problem
 
-### Target Audience
+Planning your day effectively is hard. Most people either:
+- Spend 30+ minutes manually organizing tasks each morning
+- Skip planning entirely and lose hours to context-switching and reactive work
+- Use rigid tools that don't adapt to their energy, available time, or priorities
 
-Event organizers, office managers, small business owners, and anyone who needs to purchase multiple items across different retailers under time and budget constraints.
+### Solution
 
-### Solution & Core Features
+OrchestrAI is a multi-agent AI system that orchestrates your entire daily planning workflow in seconds:
 
-OrchestrAI is an AI agent that handles shopping end-to-end:
+1. **Decomposer Agent** -- Breaks vague goals into concrete, actionable tasks
+2. **Prioritizer Agent** -- Scores tasks by urgency and importance (Eisenhower Matrix)
+3. **Estimator Agent** -- Estimates realistic time requirements per task
+4. **Scheduler Agent** -- Builds an optimized time-blocked schedule (Morning/Afternoon/Evening)
+5. **Coach Agent** -- Provides motivational insights, productivity tips, and warnings
 
-1. **Intent Understanding** — Parses natural language requests and breaks them down into specific product needs
-2. **Multi-Retailer Discovery** — Searches multiple stores simultaneously to find matching products
-3. **Intelligent Ranking** — Scores and filters items by price and delivery time
-4. **Unified Cart Building** — Combines the best items from different retailers into an optimized cart
-5. **Simulated Checkout** — Executes orders across all stores in parallel with audit trail
+Each agent is a specialized LLM call with its own system prompt and structured JSON output, chained in a pipeline. Every call is traced by **Opik** for full observability.
 
-### Unique Selling Proposition (USP)
+### Unique Selling Proposition
 
-Unlike price comparison tools that still require manual checkout, OrchestrAI provides true delegation — one conversation handles discovery, optimization, AND checkout across all retailers automatically.
+Unlike simple to-do apps, OrchestrAI provides true **delegation of the planning process itself**. You describe your goals in natural language, and the AI agent pipeline handles decomposition, prioritization, time estimation, and scheduling -- all in one conversational flow.
 
-### Results & Impact
+## Opik Integration
 
-OrchestrAI reduces multi-store shopping from hours to seconds. Users save time by eliminating manual comparison and separate checkouts, save money through automatic price optimization, and never miss deadlines with delivery-aware ranking.
+### Backend Tracing (Node.js)
 
----
+- **`opik-openai`** wraps every OpenAI API call with automatic tracing
+- Hierarchical traces: parent trace per orchestration request, child spans per agent
+- Tags and metadata: agent name, strategy, energy level, input/output
+- Token usage, latency, and model info captured automatically
+
+### Evaluation Pipeline (Python)
+
+- **10 diverse test scenarios** covering work, personal, wellness, and academic use cases
+- **3 GEval metrics** (LLM-as-judge):
+  - **Decomposition Quality**: Are tasks specific, actionable, and well-categorized?
+  - **Priority Accuracy**: Does the ranking follow logical urgency/importance?
+  - **Schedule Feasibility**: Does the schedule fit time constraints with good energy matching?
+- **Opik Experiments**: Compare different strategies, models, or prompt versions
+- **Opik Dashboards**: View traces, metrics, and evaluation results in the Opik UI
+
+### Running the Evaluation
+
+```bash
+cd evaluation
+pip install -r requirements.txt
+export OPIK_API_KEY=your_opik_key
+export OPENAI_API_KEY=your_openai_key
+python evaluate.py
+```
 
 ## Tech Stack
 
 - **Backend:** Node.js, Express
 - **Frontend:** React, Vite, Tailwind CSS
-- **AI:** OpenAI API
-- **Other:** Framer Motion, Lucide React
+- **AI:** OpenAI API (GPT-4o-mini)
+- **Observability:** Opik (Comet) -- tracing, evaluation, experiments
+- **Other:** Framer Motion, Lucide React, ElevenLabs (optional voice)
 
 ## Project Structure
 
 ```
 OrchestrAI/
-├── server.js                 # Express server entry point
+├── server.js                 # Express server with /api/orchestrate endpoint
 ├── services/
-│   ├── planner.js            # Calculates item needs from requirements
-│   ├── rankingEngine.js      # Ranks items by price/delivery
-│   ├── checkoutSimulator.js  # Simulates multi-store checkout
-│   ├── llmService.js         # OpenAI integration
-│   └── voiceService.js       # Voice interface support
-├── data/
-│   └── hackathonInventory.js # Multi-retailer product inventory
+│   ├── llmService.js         # 5 AI agents + Opik tracing + orchestration pipeline
+│   └── voiceService.js       # Optional voice summary via ElevenLabs
+├── evaluation/
+│   ├── evaluate.py           # Opik evaluation script with GEval metrics
+│   ├── dataset.json          # 10 test scenarios for evaluation
+│   └── requirements.txt      # Python dependencies
 ├── frontend/
 │   ├── src/
-│   │   ├── App.jsx           # Main application
-│   │   └── components/       # React components
+│   │   ├── App.jsx           # Main application with schedule UI
+│   │   ├── components/
+│   │   │   ├── AgentNetwork.jsx    # Pentagon visualization of 5 agents
+│   │   │   ├── AgentNeuralLink.jsx # Real-time agent activity header
+│   │   │   ├── GamifiedInput.jsx   # Gamified slider inputs
+│   │   │   └── MissionDebrief.jsx  # Post-commit debrief modal
+│   │   └── utils/
+│   │       └── personality.js      # Dynamic personality comments
 │   └── ...
 └── package.json
 ```
@@ -67,6 +99,7 @@ OrchestrAI/
 - Node.js (v18+)
 - npm
 - OpenAI API key
+- Opik API key (from [comet.com/opik](https://www.comet.com/opik))
 
 ### Installation
 
@@ -90,7 +123,10 @@ cd ..
 
 4. Create a `.env` file in the root directory:
 ```
-OPENAI_API_KEY=your_api_key_here
+OPENAI_API_KEY=your_openai_key
+OPIK_API_KEY=your_opik_key
+OPIK_URL_OVERRIDE=https://www.comet.com/opik/api
+OPIK_WORKSPACE_NAME=your_workspace
 ```
 
 ### Running the Application
@@ -110,49 +146,50 @@ Frontend runs at http://localhost:5173
 
 ## API Endpoints
 
-### GET /api/inventory
-Returns the full product inventory from all retailers.
-
-### POST /api/checkout
-Executes checkout across multiple stores.
+### POST /api/orchestrate
+Runs the full 5-agent pipeline to generate an optimized daily schedule.
 
 **Request Body:**
 ```json
 {
-  "cart": [
-    { "name": "USB-C Cable Pack", "store": "BulkTech", "price": 24.99 },
-    { "name": "Pizza Party Pack", "store": "Luigi's", "price": 89.99 }
-  ]
+  "goals": "Finish report, prepare presentation, go to gym",
+  "availableHours": 8,
+  "energyLevel": "high",
+  "strategy": "balanced"
 }
 ```
 
 **Response:**
 ```json
 {
-  "status": "complete",
-  "orders": [...],
-  "audit_log": [
-    "Connecting to BulkTech... Success. Authorized $24.99. Order #BULK-123.",
-    "Connecting to Luigi's... Success. Authorized $89.99. Order #LUIG-456."
-  ]
+  "schedule": [...],
+  "reasoning": "Agent pipeline logs...",
+  "totalMinutes": 360,
+  "coaching": { "message": "...", "focusScore": 85, "topTip": "..." },
+  "metrics": { "goalsProcessed": 3, "tasksScheduled": 5, "focusScore": 85 }
 }
 ```
 
+### POST /api/commit
+Simulates committing the schedule to a calendar.
+
+### POST /api/speak
+Generates an audio summary of the schedule (requires ElevenLabs API key).
+
 ## Demo Scenario
 
-The demo showcases a hackathon supply ordering scenario:
-
-> "I need supplies for 50 attendees arriving by Friday under $500"
+> "Finish quarterly report, prepare team presentation, review 3 pull requests, go to the gym, read 30 pages"
 
 OrchestrAI automatically:
-- Calculates needs (5 cable packs, 25 pizzas, 50 swag items)
-- Finds the best options across multiple vendors
-- Ranks by price and delivery time
-- Completes checkout in one conversational flow
+- Decomposes 5 goals into 5+ actionable tasks
+- Prioritizes by urgency and importance
+- Estimates time for each task
+- Builds a time-blocked schedule (Morning/Afternoon/Evening)
+- Provides a coaching briefing with productivity tips
 
 ## Team
 
-Built for Hack-Nation Hackathon 2026
+Built for Ship Your Best Self Hackathon 2026
 
 ## License
 

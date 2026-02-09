@@ -1,13 +1,13 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { motion } from 'framer-motion';
-import { Brain, Database, Calculator, DollarSign, Cpu } from 'lucide-react';
+import { Brain, ListChecks, Timer, CalendarClock, Sparkles } from 'lucide-react';
 
 const agents = [
-    { id: 'PLANNER_AGENT', name: 'PLANNER', color: 'bg-cyber-cyan', icon: Brain },
-    { id: 'INVENTORY_BOT', name: 'INVENTORY', color: 'bg-cyber-gold', icon: Database },
-    { id: 'LOGIC_CORE', name: 'LOGIC', color: 'bg-cyber-orange', icon: Cpu },
-    { id: 'FINANCE_BOT', name: 'FINANCE', color: 'bg-green-500', icon: DollarSign },
-    { id: 'STRATEGY_OFFICER', name: 'STRATEGY', color: 'bg-cyber-cyan', icon: Calculator },
+    { id: 'DECOMPOSER', name: 'DECOMPOSER', color: 'bg-cyber-cyan', icon: ListChecks },
+    { id: 'PRIORITIZER', name: 'PRIORITIZER', color: 'bg-cyber-gold', icon: Brain },
+    { id: 'ESTIMATOR', name: 'ESTIMATOR', color: 'bg-cyber-orange', icon: Timer },
+    { id: 'SCHEDULER', name: 'SCHEDULER', color: 'bg-green-500', icon: CalendarClock },
+    { id: 'COACH', name: 'COACH', color: 'bg-purple-500', icon: Sparkles },
 ];
 
 export default function AgentNetwork({ activeAgent }) {
@@ -16,7 +16,6 @@ export default function AgentNetwork({ activeAgent }) {
             {/* Connecting Lines (Pentagon) */}
             <svg className="absolute inset-0 w-full h-full pointer-events-none opacity-20">
                 <polygon points="50,50 90,20 100,60 60,90 20,60" fill="none" stroke="currentColor" strokeWidth="1" vectorEffect="non-scaling-stroke" />
-                {/* Simplified lines for demo, actually rendered via CSS or individual lines is better for animation */}
             </svg>
 
             {/* Connection Lines (CSS) */}
@@ -31,12 +30,12 @@ export default function AgentNetwork({ activeAgent }) {
             {/* Agents */}
             <div className="relative w-40 h-40">
                 {agents.map((agent, index) => {
-                    const angle = (index * 72 - 90) * (Math.PI / 180); // Start at top (-90deg), 5 points = 72deg step
-                    const radius = 70; // px
-                    const x = Math.cos(angle) * radius + 80 - 20; // center + radius - half_size
+                    const angle = (index * 72 - 90) * (Math.PI / 180);
+                    const radius = 70;
+                    const x = Math.cos(angle) * radius + 80 - 20;
                     const y = Math.sin(angle) * radius + 80 - 20;
 
-                    const isActive = activeAgent?.includes(agent.id);
+                    const isActive = activeAgent === agent.id;
 
                     return (
                         <motion.div
@@ -46,12 +45,9 @@ export default function AgentNetwork({ activeAgent }) {
                             animate={isActive ? { scale: [1, 1.2, 1] } : { scale: 1 }}
                             transition={{ duration: 0.5, repeat: isActive ? Infinity : 0 }}
                         >
-                            {/* Agent Icon */}
                             <agent.icon className={`w-5 h-5 ${isActive ? 'text-black' : 'text-gray-500'}`} />
 
-                            {/* Agent Name - Always Visible */}
-                            <div className={`absolute -bottom-8 left-1/2 -translate-x-1/2 text-[8px] font-mono uppercase tracking-wider transition-all duration-300 ${isActive ? 'opacity-100 text-white font-bold scale-110' : 'opacity-70 text-gray-400'
-                                }`}>
+                            <div className={`absolute -bottom-8 left-1/2 -translate-x-1/2 text-[7px] font-mono uppercase tracking-wider transition-all duration-300 whitespace-nowrap ${isActive ? 'opacity-100 text-white font-bold scale-110' : 'opacity-70 text-gray-400'}`}>
                                 {agent.name}
                             </div>
                         </motion.div>

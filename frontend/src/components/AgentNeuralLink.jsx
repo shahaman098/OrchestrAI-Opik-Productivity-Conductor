@@ -2,10 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const agents = [
-    { id: 'PLANNER_AGENT', name: 'ALPHA', color: '#00d9ff', shortName: 'PLN' },
-    { id: 'INVENTORY_BOT', name: 'BETA', color: '#ffa500', shortName: 'INV' },
-    { id: 'LOGIC_CORE', name: 'GAMMA', color: '#ff6b35', shortName: 'LOG' },
-    { id: 'FINANCE_BOT', name: 'DELTA', color: '#22c55e', shortName: 'FIN' },
+    { id: 'DECOMPOSER', name: 'DECOMPOSER', color: '#00d9ff', shortName: 'DEC' },
+    { id: 'PRIORITIZER', name: 'PRIORITIZER', color: '#ffa500', shortName: 'PRI' },
+    { id: 'ESTIMATOR', name: 'ESTIMATOR', color: '#ff6b35', shortName: 'EST' },
+    { id: 'SCHEDULER', name: 'SCHEDULER', color: '#22c55e', shortName: 'SCH' },
+    { id: 'COACH', name: 'COACH', color: '#a855f7', shortName: 'COA' },
 ];
 
 export default function AgentNeuralLink({ activeAgent, latestMessage }) {
@@ -13,17 +14,14 @@ export default function AgentNeuralLink({ activeAgent, latestMessage }) {
     const [transcript, setTranscript] = useState('');
     const [displayedTranscript, setDisplayedTranscript] = useState('');
 
-    // Get active agent details
-    const activeAgentData = agents.find(a => activeAgent?.includes(a.id));
+    const activeAgentData = agents.find(a => activeAgent === a.id);
 
-    // Update transcript when new message arrives
     useEffect(() => {
         if (latestMessage && activeAgentData) {
             setTranscript(`>> INCOMING TRANSMISSION [${activeAgentData.name}]: ${latestMessage.toUpperCase()}`);
         }
     }, [latestMessage, activeAgentData]);
 
-    // Typewriter effect for transcript
     useEffect(() => {
         if (!transcript) return;
 
@@ -42,12 +40,10 @@ export default function AgentNeuralLink({ activeAgent, latestMessage }) {
         return () => clearInterval(interval);
     }, [transcript]);
 
-    // Trigger data beam animation when agent activates
     useEffect(() => {
         if (activeAgentData) {
             const sourceIndex = agents.findIndex(a => a.id === activeAgentData.id);
 
-            // Create beams to all other agents
             const newBeams = agents
                 .map((_, targetIndex) => targetIndex)
                 .filter(i => i !== sourceIndex)
@@ -59,7 +55,6 @@ export default function AgentNeuralLink({ activeAgent, latestMessage }) {
 
             setDataBeams(newBeams);
 
-            // Clear beams after animation
             const timeout = setTimeout(() => setDataBeams([]), 1500);
             return () => clearTimeout(timeout);
         }
@@ -67,11 +62,8 @@ export default function AgentNeuralLink({ activeAgent, latestMessage }) {
 
     return (
         <div className="w-full bg-black/80 backdrop-blur-md border-b border-white/10 shadow-2xl">
-            {/* Agent Network */}
             <div className="relative h-24 flex items-center justify-around px-8">
-                {/* SVG Layer for Connection Lines */}
                 <svg className="absolute inset-0 w-full h-full pointer-events-none" style={{ zIndex: 0 }}>
-                    {/* Static connection grid (subtle) */}
                     {agents.map((agent, i) => {
                         const x1 = ((i + 1) / (agents.length + 1)) * 100;
                         return agents.slice(i + 1).map((_, j) => {
@@ -90,7 +82,6 @@ export default function AgentNeuralLink({ activeAgent, latestMessage }) {
                         });
                     })}
 
-                    {/* Animated Data Beams */}
                     <AnimatePresence>
                         {dataBeams.map(beam => {
                             const x1 = ((beam.source + 1) / (agents.length + 1)) * 100;
@@ -98,7 +89,6 @@ export default function AgentNeuralLink({ activeAgent, latestMessage }) {
 
                             return (
                                 <motion.g key={beam.id}>
-                                    {/* Beam line */}
                                     <motion.line
                                         x1={`${x1}%`}
                                         y1="50%"
@@ -111,8 +101,6 @@ export default function AgentNeuralLink({ activeAgent, latestMessage }) {
                                         exit={{ opacity: 0 }}
                                         transition={{ duration: 0.8 }}
                                     />
-
-                                    {/* Data packet */}
                                     <motion.circle
                                         r="4"
                                         fill={agents[beam.source].color}
@@ -127,7 +115,6 @@ export default function AgentNeuralLink({ activeAgent, latestMessage }) {
                         })}
                     </AnimatePresence>
 
-                    {/* SVG Filter for glow effect */}
                     <defs>
                         <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
                             <feGaussianBlur stdDeviation="3" result="coloredBlur" />
@@ -139,8 +126,7 @@ export default function AgentNeuralLink({ activeAgent, latestMessage }) {
                     </defs>
                 </svg>
 
-                {/* Agent Nodes */}
-                {agents.map((agent, index) => {
+                {agents.map((agent) => {
                     const isActive = activeAgentData?.id === agent.id;
 
                     return (
@@ -150,7 +136,6 @@ export default function AgentNeuralLink({ activeAgent, latestMessage }) {
                             animate={isActive ? { scale: [1, 1.1, 1] } : { scale: 1 }}
                             transition={{ duration: 0.5 }}
                         >
-                            {/* Agent Circle */}
                             <motion.div
                                 className="w-12 h-12 rounded-full border-2 flex items-center justify-center font-mono text-xs font-bold relative"
                                 style={{
@@ -162,7 +147,6 @@ export default function AgentNeuralLink({ activeAgent, latestMessage }) {
                             >
                                 {agent.shortName}
 
-                                {/* Pulse ring when active */}
                                 {isActive && (
                                     <motion.div
                                         className="absolute inset-0 rounded-full border-2"
@@ -174,7 +158,6 @@ export default function AgentNeuralLink({ activeAgent, latestMessage }) {
                                 )}
                             </motion.div>
 
-                            {/* Agent Label */}
                             <div
                                 className="text-[8px] font-mono uppercase tracking-widest font-bold"
                                 style={{ color: isActive ? agent.color : 'rgba(255,255,255,0.4)' }}
@@ -186,12 +169,11 @@ export default function AgentNeuralLink({ activeAgent, latestMessage }) {
                 })}
             </div>
 
-            {/* Live Transcript Bar */}
             <div
                 className="h-10 px-8 flex items-center font-mono text-xs uppercase tracking-wide border-t border-white/10 bg-black/60"
                 style={{ color: activeAgentData?.color || '#00d9ff' }}
             >
-                {displayedTranscript || '>> SYSTEM STANDBY...'}
+                {displayedTranscript || '>> SYSTEM STANDBY... AWAITING GOALS'}
                 {displayedTranscript.length < transcript.length && (
                     <span className="inline-block w-2 h-3 bg-current ml-1 animate-pulse" />
                 )}

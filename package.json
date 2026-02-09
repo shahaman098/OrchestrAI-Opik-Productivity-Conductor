@@ -1,19 +1,28 @@
 {
   "name": "orchestrai",
-  "version": "1.0.0",
-  "description": "",
+  "version": "2.0.0",
+  "description": "AI Productivity Orchestrator - Multi-agent system that optimizes your daily schedule using 5 specialized AI agents, with full Opik observability and evaluation",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [],
+  "keywords": [
+    "ai",
+    "productivity",
+    "agents",
+    "opik",
+    "observability",
+    "gemini",
+    "multi-agent"
+  ],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@google/genai": "^1.40.0",
     "axios": "^1.13.4",
     "dotenv": "^17.2.4",
     "express": "^5.2.1",
-    "openai": "^6.18.0"
+    "opik": "^1.0.10"
   }
 }

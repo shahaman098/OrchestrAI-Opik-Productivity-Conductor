@@ -1,0 +1,102 @@
+[
+  {
+    "id": "test-1",
+    "goals": "Finish quarterly report, prepare team presentation, review 3 pull requests",
+    "availableHours": 8,
+    "energyLevel": "high",
+    "strategy": "balanced",
+    "expected_task_count_min": 3,
+    "expected_has_priorities": true,
+    "description": "Standard work day with clear work tasks"
+  },
+  {
+    "id": "test-2",
+    "goals": "Go to the gym, meal prep for the week, read 50 pages, meditate for 20 minutes",
+    "availableHours": 6,
+    "energyLevel": "medium",
+    "strategy": "balanced",
+    "expected_task_count_min": 4,
+    "expected_has_priorities": true,
+    "description": "Personal wellness day"
+  },
+  {
+    "id": "test-3",
+    "goals": "Write blog post about AI trends, learn React hooks, fix login bug in production",
+    "availableHours": 4,
+    "energyLevel": "low",
+    "strategy": "deep_focus",
+    "expected_task_count_min": 3,
+    "expected_has_priorities": true,
+    "description": "Short low-energy day with technical tasks"
+  },
+  {
+    "id": "test-4",
+    "goals": "Clean the apartment, do laundry, buy groceries, call mom, pay bills online",
+    "availableHours": 5,
+    "energyLevel": "low",
+    "strategy": "balanced",
+    "expected_task_count_min": 5,
+    "expected_has_priorities": true,
+    "description": "Errands and personal tasks day"
+  },
+  {
+    "id": "test-5",
+    "goals": "Prepare investor pitch deck, finalize financial projections, practice presentation 3 times, send follow-up emails to 10 leads",
+    "availableHours": 10,
+    "energyLevel": "high",
+    "strategy": "deep_focus",
+    "expected_task_count_min": 4,
+    "expected_has_priorities": true,
+    "description": "High-stakes startup day"
+  },
+  {
+    "id": "test-6",
+    "goals": "Study for calculus exam, complete physics homework, write English essay outline",
+    "availableHours": 6,
+    "energyLevel": "medium",
+    "strategy": "balanced",
+    "expected_task_count_min": 3,
+    "expected_has_priorities": true,
+    "description": "Student study day"
+  },
+  {
+    "id": "test-7",
+    "goals": "Deploy new microservice to staging, write unit tests for auth module, code review Sarah's PR, update API documentation",
+    "availableHours": 8,
+    "energyLevel": "high",
+    "strategy": "deep_focus",
+    "expected_task_count_min": 4,
+    "expected_has_priorities": true,
+    "description": "Engineering sprint day"
+  },
+  {
+    "id": "test-8",
+    "goals": "Run 5K, stretch and yoga, plan next week's meals, journal about the week",
+    "availableHours": 3,
+    "energyLevel": "high",
+    "strategy": "balanced",
+    "expected_task_count_min": 4,
+    "expected_has_priorities": true,
+    "description": "Weekend wellness morning"
+  },
+  {
+    "id": "test-9",
+    "goals": "Research competitors, draft marketing copy for landing page, set up Google Analytics, design social media posts for launch week",
+    "availableHours": 7,
+    "energyLevel": "medium",
+    "strategy": "balanced",
+    "expected_task_count_min": 4,
+    "expected_has_priorities": true,
+    "description": "Marketing launch prep"
+  },
+  {
+    "id": "test-10",
+    "goals": "Attend standup meeting, fix critical production bug, mentor junior developer, write sprint retrospective notes, plan next sprint backlog",
+    "availableHours": 8,
+    "energyLevel": "medium",
+    "strategy": "balanced",
+    "expected_task_count_min": 5,
+    "expected_has_priorities": true,
+    "description": "Engineering lead daily routine"
+  }
+]
