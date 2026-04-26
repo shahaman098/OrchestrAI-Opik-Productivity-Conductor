@@ -1,29 +1,30 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const agents = [
-    { id: 'DECOMPOSER', name: 'DECOMPOSER', color: '#00d9ff', shortName: 'DEC' },
-    { id: 'PRIORITIZER', name: 'PRIORITIZER', color: '#ffa500', shortName: 'PRI' },
-    { id: 'ESTIMATOR', name: 'ESTIMATOR', color: '#ff6b35', shortName: 'EST' },
-    { id: 'SCHEDULER', name: 'SCHEDULER', color: '#22c55e', shortName: 'SCH' },
-    { id: 'COACH', name: 'COACH', color: '#a855f7', shortName: 'COA' },
+    { id: 'SCOPER', name: 'SCOPER', color: '#22d3ee', shortName: 'SCP' },
+    { id: 'LIT_QC', name: 'LIT_QC', color: '#f59e0b', shortName: 'LQC' },
+    { id: 'PROTOCOL', name: 'PROTOCOL', color: '#34d399', shortName: 'PTL' },
+    { id: 'BUDGETER', name: 'BUDGETER', color: '#fb923c', shortName: 'BDG' },
+    { id: 'REVIEWER', name: 'REVIEWER', color: '#a78bfa', shortName: 'REV' },
+    { id: 'REFLECTOR', name: 'REFLECTOR', color: '#f472b6', shortName: 'RFX' },
 ];
 
 export default function AgentNeuralLink({ activeAgent, latestMessage }) {
-    const [dataBeams, setDataBeams] = useState([]);
     const [transcript, setTranscript] = useState('');
     const [displayedTranscript, setDisplayedTranscript] = useState('');
+    const [dataBeams, setDataBeams] = useState([]);
 
-    const activeAgentData = agents.find(a => activeAgent === a.id);
+    const activeAgentData = agents.find(agent => agent.id === activeAgent);
 
     useEffect(() => {
         if (latestMessage && activeAgentData) {
-            setTranscript(`>> INCOMING TRANSMISSION [${activeAgentData.name}]: ${latestMessage.toUpperCase()}`);
+            setTranscript(`>> ${activeAgentData.name} :: ${latestMessage.toUpperCase()}`);
         }
     }, [latestMessage, activeAgentData]);
 
     useEffect(() => {
-        if (!transcript) return;
+        if (!transcript) return undefined;
 
         let index = 0;
         setDisplayedTranscript('');
@@ -31,46 +32,44 @@ export default function AgentNeuralLink({ activeAgent, latestMessage }) {
         const interval = setInterval(() => {
             if (index < transcript.length) {
                 setDisplayedTranscript(transcript.substring(0, index + 1));
-                index++;
+                index += 1;
             } else {
                 clearInterval(interval);
             }
-        }, 20);
+        }, 14);
 
         return () => clearInterval(interval);
     }, [transcript]);
 
     useEffect(() => {
-        if (activeAgentData) {
-            const sourceIndex = agents.findIndex(a => a.id === activeAgentData.id);
+        if (!activeAgentData) return undefined;
 
-            const newBeams = agents
-                .map((_, targetIndex) => targetIndex)
-                .filter(i => i !== sourceIndex)
-                .map(targetIndex => ({
-                    id: `${sourceIndex}-${targetIndex}-${Date.now()}`,
-                    source: sourceIndex,
-                    target: targetIndex,
-                }));
+        const sourceIndex = agents.findIndex(agent => agent.id === activeAgentData.id);
+        const beams = agents
+            .map((_, targetIndex) => targetIndex)
+            .filter(index => index !== sourceIndex)
+            .map(targetIndex => ({
+                id: `${sourceIndex}-${targetIndex}-${Date.now()}`,
+                source: sourceIndex,
+                target: targetIndex,
+            }));
 
-            setDataBeams(newBeams);
-
-            const timeout = setTimeout(() => setDataBeams([]), 1500);
-            return () => clearTimeout(timeout);
-        }
+        setDataBeams(beams);
+        const timeout = setTimeout(() => setDataBeams([]), 1200);
+        return () => clearTimeout(timeout);
     }, [activeAgentData]);
 
     return (
-        <div className="w-full bg-black/80 backdrop-blur-md border-b border-white/10 shadow-2xl">
-            <div className="relative h-24 flex items-center justify-around px-8">
-                <svg className="absolute inset-0 w-full h-full pointer-events-none" style={{ zIndex: 0 }}>
-                    {agents.map((agent, i) => {
-                        const x1 = ((i + 1) / (agents.length + 1)) * 100;
-                        return agents.slice(i + 1).map((_, j) => {
-                            const x2 = ((i + j + 2) / (agents.length + 1)) * 100;
+        <div className="w-full bg-black/75 backdrop-blur-xl border-b border-white/10">
+            <div className="relative h-24 px-8 flex items-center justify-around">
+                <svg className="absolute inset-0 w-full h-full pointer-events-none">
+                    {agents.map((agent, index) => {
+                        const x1 = ((index + 1) / (agents.length + 1)) * 100;
+                        return agents.slice(index + 1).map((_, offset) => {
+                            const x2 = ((index + offset + 2) / (agents.length + 1)) * 100;
                             return (
                                 <line
-                                    key={`line-${i}-${j}`}
+                                    key={`${agent.id}-${offset}`}
                                     x1={`${x1}%`}
                                     y1="50%"
                                     x2={`${x2}%`}
@@ -86,7 +85,6 @@ export default function AgentNeuralLink({ activeAgent, latestMessage }) {
                         {dataBeams.map(beam => {
                             const x1 = ((beam.source + 1) / (agents.length + 1)) * 100;
                             const x2 = ((beam.target + 1) / (agents.length + 1)) * 100;
-
                             return (
                                 <motion.g key={beam.id}>
                                     <motion.line
@@ -99,69 +97,52 @@ export default function AgentNeuralLink({ activeAgent, latestMessage }) {
                                         initial={{ pathLength: 0, opacity: 0 }}
                                         animate={{ pathLength: 1, opacity: [0, 1, 0] }}
                                         exit={{ opacity: 0 }}
-                                        transition={{ duration: 0.8 }}
+                                        transition={{ duration: 0.7 }}
                                     />
                                     <motion.circle
                                         r="4"
                                         fill={agents[beam.source].color}
-                                        filter="url(#glow)"
-                                        initial={{ cx: `${x1}%`, cy: "50%" }}
-                                        animate={{ cx: `${x2}%`, cy: "50%" }}
+                                        initial={{ cx: `${x1}%`, cy: '50%' }}
+                                        animate={{ cx: `${x2}%`, cy: '50%' }}
                                         exit={{ opacity: 0 }}
-                                        transition={{ duration: 0.8, ease: "easeInOut" }}
+                                        transition={{ duration: 0.7, ease: 'easeInOut' }}
                                     />
                                 </motion.g>
                             );
                         })}
                     </AnimatePresence>
-
-                    <defs>
-                        <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
-                            <feGaussianBlur stdDeviation="3" result="coloredBlur" />
-                            <feMerge>
-                                <feMergeNode in="coloredBlur" />
-                                <feMergeNode in="SourceGraphic" />
-                            </feMerge>
-                        </filter>
-                    </defs>
                 </svg>
 
-                {agents.map((agent) => {
-                    const isActive = activeAgentData?.id === agent.id;
-
+                {agents.map(agent => {
+                    const isActive = activeAgent === agent.id;
                     return (
                         <motion.div
                             key={agent.id}
-                            className="relative z-10 flex flex-col items-center gap-2"
-                            animate={isActive ? { scale: [1, 1.1, 1] } : { scale: 1 }}
+                            animate={isActive ? { scale: [1, 1.08, 1] } : { scale: 1 }}
                             transition={{ duration: 0.5 }}
+                            className="relative z-10 flex flex-col items-center gap-2"
                         >
-                            <motion.div
-                                className="w-12 h-12 rounded-full border-2 flex items-center justify-center font-mono text-xs font-bold relative"
+                            <div
+                                className="w-12 h-12 rounded-full border flex items-center justify-center font-mono text-[10px] font-bold relative"
                                 style={{
-                                    backgroundColor: isActive ? agent.color : 'rgba(0,0,0,0.5)',
-                                    borderColor: isActive ? agent.color : 'rgba(255,255,255,0.2)',
-                                    color: isActive ? '#000' : agent.color,
-                                    boxShadow: isActive ? `0 0 30px ${agent.color}, 0 0 60px ${agent.color}40` : 'none',
+                                    backgroundColor: isActive ? agent.color : 'rgba(0,0,0,0.45)',
+                                    borderColor: isActive ? agent.color : 'rgba(255,255,255,0.18)',
+                                    color: isActive ? '#020617' : agent.color,
+                                    boxShadow: isActive ? `0 0 28px ${agent.color}` : 'none',
                                 }}
                             >
                                 {agent.shortName}
-
                                 {isActive && (
                                     <motion.div
-                                        className="absolute inset-0 rounded-full border-2"
+                                        className="absolute inset-0 rounded-full border"
                                         style={{ borderColor: agent.color }}
-                                        initial={{ scale: 1, opacity: 0.8 }}
-                                        animate={{ scale: 1.8, opacity: 0 }}
+                                        initial={{ scale: 1, opacity: 0.7 }}
+                                        animate={{ scale: 1.65, opacity: 0 }}
                                         transition={{ duration: 1, repeat: Infinity }}
                                     />
                                 )}
-                            </motion.div>
-
-                            <div
-                                className="text-[8px] font-mono uppercase tracking-widest font-bold"
-                                style={{ color: isActive ? agent.color : 'rgba(255,255,255,0.4)' }}
-                            >
+                            </div>
+                            <div className="text-[8px] font-mono uppercase tracking-[0.25em]" style={{ color: isActive ? agent.color : 'rgba(255,255,255,0.45)' }}>
                                 {agent.name}
                             </div>
                         </motion.div>
@@ -169,11 +150,8 @@ export default function AgentNeuralLink({ activeAgent, latestMessage }) {
                 })}
             </div>
 
-            <div
-                className="h-10 px-8 flex items-center font-mono text-xs uppercase tracking-wide border-t border-white/10 bg-black/60"
-                style={{ color: activeAgentData?.color || '#00d9ff' }}
-            >
-                {displayedTranscript || '>> SYSTEM STANDBY... AWAITING GOALS'}
+            <div className="h-10 px-8 flex items-center border-t border-white/10 bg-black/50 font-mono text-xs tracking-wide" style={{ color: activeAgentData?.color || '#22d3ee' }}>
+                {displayedTranscript || '>> SYSTEM STANDBY :: WAITING FOR HYPOTHESIS'}
                 {displayedTranscript.length < transcript.length && (
                     <span className="inline-block w-2 h-3 bg-current ml-1 animate-pulse" />
                 )}

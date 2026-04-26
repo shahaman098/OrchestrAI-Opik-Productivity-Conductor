@@ -1,103 +1,60 @@
-// Productivity-themed personality responses
-export const getPersonalityComment = (hours, energy, strategy, goals) => {
-    const comments = {
-        marathon: [
-            "12+ hours? That's a serious grind day! Let's make it count.",
-            "Marathon mode activated. Pace yourself!",
-            "Long day ahead - the agents will optimize every minute.",
+export const getPersonalityComment = (budget, timelineWeeks, evidenceMode, hypothesis) => {
+    const hypothesisLength = hypothesis?.trim().length || 0;
+
+    const pools = {
+        constrained: [
+            'Tight budget. Keep the pilot narrow and the readout clean.',
+            'Budget ceiling is low. Optimize for one decisive experiment, not a broad program.',
+            'Resource-constrained mode. Prioritize the first falsifiable signal.',
         ],
-        shortDay: [
-            "Short window? Let's focus on what matters most.",
-            "Limited time = ruthless prioritization.",
-            "Quality over quantity today!",
+        ambitious: [
+            'Enough room for a real pilot package. Lock the controls before scope expands.',
+            'You have budget for a credible prototype. Spend it on signal, not surface area.',
+            'This can support a proper pilot if the novelty screen stays disciplined.',
         ],
-        highEnergy: [
-            "High energy detected! Let's tackle the hard stuff first.",
-            "Peak performance mode - time to crush it!",
-            "All systems at maximum capacity!",
+        shortRun: [
+            'Fast timeline. Treat this as a pilot with one decision gate.',
+            'Few weeks available. Remove optional endpoints early.',
+            'Compressed schedule detected. Fewer variables will help more than better copy.',
         ],
-        lowEnergy: [
-            "Low energy day? We'll keep it manageable.",
-            "Rest is productive too. Let's be strategic.",
-            "Smart scheduling for a low-key day.",
+        evidenceHeavy: [
+            'Evidence-first mode. Expect the literature gate to drive the whole plan.',
+            'Strict QC selected. References and controls carry more weight than novelty language.',
+            'Verification mode active. The plan should survive scientist scrutiny, not just demo day.',
         ],
-        deepFocus: [
-            "Deep focus mode: fewer tasks, deeper work.",
-            "Eliminating distractions. Single-tasking activated.",
-            "Deep work protocol engaged.",
-        ],
-        manyGoals: [
-            "That's an ambitious list! Let's prioritize ruthlessly.",
-            "Lots of goals - the agents will find the optimal path.",
-            "Big agenda detected. Time to orchestrate!",
+        vague: [
+            'The hypothesis still needs sharper boundaries. Controls and thresholds matter.',
+            'Broad scientific intent detected. Narrow the claim before you narrow the budget.',
+            'Good direction, loose framing. The scoper will need to tighten it.',
         ],
         balanced: [
-            "Balanced day ahead. Let's optimize it!",
-            "The agents are ready to build your perfect schedule.",
-            "Enter your goals and let the AI orchestra play.",
-            "5 agents, 1 mission: your most productive day.",
-        ]
+            'Ready to convert the hypothesis into a runnable pilot package.',
+            'Agent stack is primed for literature QC, protocol design, and budget review.',
+            'This setup is tuned for challenge 04: hypothesis to experiment plan.',
+        ],
     };
 
-    const goalCount = goals ? goals.split(/[,\n]+/).filter(g => g.trim()).length : 0;
-
-    if (hours >= 12) return comments.marathon[Math.floor(Math.random() * comments.marathon.length)];
-    if (hours <= 4) return comments.shortDay[Math.floor(Math.random() * comments.shortDay.length)];
-    if (energy === 'high') return comments.highEnergy[Math.floor(Math.random() * comments.highEnergy.length)];
-    if (energy === 'low') return comments.lowEnergy[Math.floor(Math.random() * comments.lowEnergy.length)];
-    if (strategy === 'deep_focus') return comments.deepFocus[Math.floor(Math.random() * comments.deepFocus.length)];
-    if (goalCount >= 5) return comments.manyGoals[Math.floor(Math.random() * comments.manyGoals.length)];
-
-    return comments.balanced[Math.floor(Math.random() * comments.balanced.length)];
-};
-
-export const getAgentQuip = (agentName) => {
-    const quips = {
-        DECOMPOSER: [
-            "Breaking goals into bite-sized tasks...",
-            "Analyzing your objectives...",
-            "Decomposition in progress...",
-        ],
-        PRIORITIZER: [
-            "Ranking by urgency and importance...",
-            "Applying Eisenhower matrix...",
-            "Finding the critical path...",
-        ],
-        ESTIMATOR: [
-            "Calculating time requirements...",
-            "Estimating effort levels...",
-            "Crunching the numbers...",
-        ],
-        SCHEDULER: [
-            "Building time blocks...",
-            "Optimizing your calendar...",
-            "Arranging the perfect day...",
-        ],
-        COACH: [
-            "Crafting your productivity brief...",
-            "Analyzing schedule quality...",
-            "Preparing motivational insights...",
-        ]
-    };
-
-    return quips[agentName]?.[Math.floor(Math.random() * (quips[agentName]?.length || 1))] || "Processing...";
+    if (budget <= 1500) return pools.constrained[Math.floor(Math.random() * pools.constrained.length)];
+    if (timelineWeeks <= 4) return pools.shortRun[Math.floor(Math.random() * pools.shortRun.length)];
+    if (evidenceMode === 'strict') return pools.evidenceHeavy[Math.floor(Math.random() * pools.evidenceHeavy.length)];
+    if (hypothesisLength < 110) return pools.vague[Math.floor(Math.random() * pools.vague.length)];
+    if (budget >= 3000) return pools.ambitious[Math.floor(Math.random() * pools.ambitious.length)];
+    return pools.balanced[Math.floor(Math.random() * pools.balanced.length)];
 };
 
 export const getLoadingQuip = () => {
     const quips = [
-        "5 AI agents standing by...",
-        "Ready to orchestrate your day...",
-        "Neural link initialized...",
-        "Productivity pipeline ready...",
-        "Enter your goals to begin...",
-        "Your AI productivity team awaits...",
+        'Scientist-planning agents standing by...',
+        'Ready to score novelty and draft protocol...',
+        'Lab handoff pipeline initialized...',
+        'Waiting for a testable hypothesis...',
     ];
     return quips[Math.floor(Math.random() * quips.length)];
 };
 
 export const getCheckoutQuip = (focusScore) => {
-    if (focusScore >= 90) return "Peak productivity plan! You're going to crush it!";
-    if (focusScore >= 75) return "Solid schedule! Well-optimized for your constraints.";
-    if (focusScore >= 60) return "Good plan with room to breathe.";
-    return "Conservative schedule - sometimes less is more!";
+    if (focusScore >= 90) return 'Review-ready package. The next step is verified sourcing.';
+    if (focusScore >= 80) return 'Strong pilot plan with manageable execution risk.';
+    if (focusScore >= 65) return 'Useful prototype, but the evidence gate still needs work.';
+    return 'Concept is viable, but a scientist should tighten scope before procurement.';
 };

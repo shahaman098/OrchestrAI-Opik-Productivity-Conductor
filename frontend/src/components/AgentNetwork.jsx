@@ -1,62 +1,55 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Brain, ListChecks, Timer, CalendarClock, Sparkles } from 'lucide-react';
+import { Microscope, SearchCode, FlaskConical, Coins, ShieldCheck, Radar } from 'lucide-react';
 
 const agents = [
-    { id: 'DECOMPOSER', name: 'DECOMPOSER', color: 'bg-cyber-cyan', icon: ListChecks },
-    { id: 'PRIORITIZER', name: 'PRIORITIZER', color: 'bg-cyber-gold', icon: Brain },
-    { id: 'ESTIMATOR', name: 'ESTIMATOR', color: 'bg-cyber-orange', icon: Timer },
-    { id: 'SCHEDULER', name: 'SCHEDULER', color: 'bg-green-500', icon: CalendarClock },
-    { id: 'COACH', name: 'COACH', color: 'bg-purple-500', icon: Sparkles },
+    { id: 'SCOPER', name: 'SCOPER', color: 'bg-cyan-400', icon: Microscope },
+    { id: 'LIT_QC', name: 'LIT_QC', color: 'bg-amber-400', icon: SearchCode },
+    { id: 'PROTOCOL', name: 'PROTOCOL', color: 'bg-emerald-400', icon: FlaskConical },
+    { id: 'BUDGETER', name: 'BUDGETER', color: 'bg-orange-400', icon: Coins },
+    { id: 'REVIEWER', name: 'REVIEWER', color: 'bg-violet-400', icon: ShieldCheck },
+    { id: 'REFLECTOR', name: 'REFLECTOR', color: 'bg-pink-400', icon: Radar },
 ];
 
 export default function AgentNetwork({ activeAgent }) {
     return (
-        <div className="relative w-full h-48 flex items-center justify-center mb-4">
-            {/* Connecting Lines (Pentagon) */}
-            <svg className="absolute inset-0 w-full h-full pointer-events-none opacity-20">
-                <polygon points="50,50 90,20 100,60 60,90 20,60" fill="none" stroke="currentColor" strokeWidth="1" vectorEffect="non-scaling-stroke" />
-            </svg>
-
-            {/* Connection Lines (CSS) */}
-            <div className="absolute inset-0 opacity-20 animate-pulse">
-                <div className="absolute top-1/2 left-1/2 w-full h-[1px] bg-white -translate-x-1/2 -translate-y-1/2 rotate-0"></div>
-                <div className="absolute top-1/2 left-1/2 w-full h-[1px] bg-white -translate-x-1/2 -translate-y-1/2 rotate-72"></div>
-                <div className="absolute top-1/2 left-1/2 w-full h-[1px] bg-white -translate-x-1/2 -translate-y-1/2 rotate-144"></div>
-                <div className="absolute top-1/2 left-1/2 w-full h-[1px] bg-white -translate-x-1/2 -translate-y-1/2 rotate-[216deg]"></div>
-                <div className="absolute top-1/2 left-1/2 w-full h-[1px] bg-white -translate-x-1/2 -translate-y-1/2 rotate-[288deg]"></div>
+        <div className="relative w-full h-52 flex items-center justify-center">
+            <div className="absolute inset-0 opacity-15">
+                <div className="absolute top-1/2 left-1/2 w-full h-px bg-white/20 -translate-x-1/2 -translate-y-1/2" />
+                <div className="absolute top-1/2 left-1/2 w-full h-px bg-white/20 -translate-x-1/2 -translate-y-1/2 rotate-60" />
+                <div className="absolute top-1/2 left-1/2 w-full h-px bg-white/20 -translate-x-1/2 -translate-y-1/2 rotate-120" />
             </div>
 
-            {/* Agents */}
-            <div className="relative w-40 h-40">
+            <div className="relative w-44 h-44">
                 {agents.map((agent, index) => {
-                    const angle = (index * 72 - 90) * (Math.PI / 180);
-                    const radius = 70;
-                    const x = Math.cos(angle) * radius + 80 - 20;
-                    const y = Math.sin(angle) * radius + 80 - 20;
-
+                    const angle = (index * 60 - 90) * (Math.PI / 180);
+                    const radius = 76;
+                    const x = Math.cos(angle) * radius + 88 - 22;
+                    const y = Math.sin(angle) * radius + 88 - 22;
                     const isActive = activeAgent === agent.id;
 
                     return (
                         <motion.div
                             key={agent.id}
-                            className={`absolute w-10 h-10 rounded-full flex items-center justify-center border-2 border-white/10 shadow-[0_0_15px_rgba(0,0,0,0.5)] transition-all duration-300 ${isActive ? agent.color + ' border-white scale-125 shadow-[0_0_30px_currentColor] z-20' : 'bg-black/40 text-gray-500 z-10'}`}
+                            className={`absolute w-11 h-11 rounded-full border flex items-center justify-center transition-all duration-300 ${
+                                isActive
+                                    ? `${agent.color} border-white scale-125 shadow-[0_0_24px_rgba(255,255,255,0.18)] z-20`
+                                    : 'bg-black/45 border-white/15 text-gray-400 z-10'
+                            }`}
                             style={{ left: x, top: y }}
-                            animate={isActive ? { scale: [1, 1.2, 1] } : { scale: 1 }}
-                            transition={{ duration: 0.5, repeat: isActive ? Infinity : 0 }}
+                            animate={isActive ? { scale: [1, 1.18, 1] } : { scale: 1 }}
+                            transition={{ duration: 0.8, repeat: isActive ? Infinity : 0 }}
                         >
-                            <agent.icon className={`w-5 h-5 ${isActive ? 'text-black' : 'text-gray-500'}`} />
-
-                            <div className={`absolute -bottom-8 left-1/2 -translate-x-1/2 text-[7px] font-mono uppercase tracking-wider transition-all duration-300 whitespace-nowrap ${isActive ? 'opacity-100 text-white font-bold scale-110' : 'opacity-70 text-gray-400'}`}>
+                            <agent.icon className={`w-5 h-5 ${isActive ? 'text-black' : 'text-gray-400'}`} />
+                            <div className={`absolute -bottom-8 left-1/2 -translate-x-1/2 text-[8px] font-mono uppercase tracking-[0.25em] whitespace-nowrap ${isActive ? 'text-white' : 'text-gray-500'}`}>
                                 {agent.name}
                             </div>
                         </motion.div>
                     );
                 })}
 
-                {/* Central Brain/Core */}
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-16 rounded-full bg-black/50 border border-white/10 flex items-center justify-center backdrop-blur-sm">
-                    <div className={`w-2 h-2 rounded-full ${activeAgent ? 'bg-white shadow-[0_0_10px_white] animate-ping' : 'bg-gray-800'}`}></div>
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-16 rounded-full bg-black/60 border border-white/10 flex items-center justify-center backdrop-blur">
+                    <div className={`w-2.5 h-2.5 rounded-full ${activeAgent ? 'bg-cyan-300 shadow-[0_0_14px_rgba(34,211,238,0.8)] animate-pulse' : 'bg-white/15'}`} />
                 </div>
             </div>
         </div>

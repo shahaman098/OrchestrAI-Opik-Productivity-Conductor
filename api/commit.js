@@ -17,34 +17,34 @@ module.exports = async (req, res) => {
 
     try {
         const body = typeof req.body === 'string' ? JSON.parse(req.body || '{}') : (req.body || {});
-        const { schedule } = body;
+        const { artifacts, artifactType } = body;
 
-        if (!schedule || !Array.isArray(schedule)) {
-            return res.status(400).json({ error: 'Invalid schedule format. Expected an array of tasks.' });
+        if (!artifacts || !Array.isArray(artifacts)) {
+            return res.status(400).json({ error: 'Invalid artifacts format. Expected an array.' });
         }
 
         const audit_log = [];
         const commitments = [];
 
-        for (const task of schedule) {
+        for (const artifact of artifacts) {
             const delay = Math.floor(Math.random() * 300) + 100;
             // eslint-disable-next-line no-await-in-loop
             await new Promise(resolve => setTimeout(resolve, delay));
 
-            const commitId = `TASK-${String(Math.floor(Math.random() * 9000) + 1000)}`;
-            audit_log.push(`Scheduling "${task.name}" at ${task.startTime || 'TBD'}... Success. Commitment #${commitId}.`);
+            const commitId = `PLAN-${String(Math.floor(Math.random() * 9000) + 1000)}`;
+            const itemName = artifact.name || artifact.item || 'Package item';
+            audit_log.push(`Registering "${itemName}" for ${artifactType || 'lab review'}... Success. Handoff #${commitId}.`);
 
             commitments.push({
                 commitId,
-                name: task.name,
-                timeBlock: task.timeBlock,
-                startTime: task.startTime,
-                estimatedMinutes: task.estimatedMinutes,
-                priority: task.priority,
+                name: itemName,
+                phaseWindow: artifact.weekStart && artifact.weekEnd ? `Week ${artifact.weekStart}-${artifact.weekEnd}` : artifactType || 'review',
+                estimatedMinutes: artifact.effortHours ? artifact.effortHours * 60 : artifact.estimatedMinutes,
+                priority: artifact.priority || 'high',
             });
         }
 
-        audit_log.push(`All ${schedule.length} tasks committed to your schedule.`);
+        audit_log.push(`All ${artifacts.length} items approved for scientist review.`);
 
         return res.status(200).json({
             status: 'complete',
@@ -56,4 +56,3 @@ module.exports = async (req, res) => {
         return res.status(500).json({ error: 'Commit failed internally.' });
     }
 };
-

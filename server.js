@@ -19,22 +19,22 @@ app.use((req, res, next) => {
 });
 
 // POST /api/orchestrate
-// Main endpoint: chains all 5 AI agents to build an optimized daily schedule
+// Main endpoint: chains the scientist-planning agents into an experiment package
 app.post('/api/orchestrate', async (req, res) => {
-    const { goals, availableHours, energyLevel, strategy } = req.body;
-    console.log(`Orchestration Request: ${availableHours}h, energy=${energyLevel}, strategy=${strategy}`);
-    console.log(`Goals: ${goals?.substring(0, 100)}...`);
+    const { hypothesis, budgetLimit, timelineWeeks, evidenceMode } = req.body;
+    console.log(`Scientist Request: budget=$${budgetLimit}, timeline=${timelineWeeks}w, evidence=${evidenceMode}`);
+    console.log(`Hypothesis: ${hypothesis?.substring(0, 120)}...`);
 
-    if (!goals || !availableHours) {
-        return res.status(400).json({ error: "Missing required fields: goals, availableHours" });
+    if (!hypothesis) {
+        return res.status(400).json({ error: 'Missing required field: hypothesis' });
     }
 
     try {
         const result = await llmService.orchestrate({
-            goals,
-            availableHours: Number(availableHours),
-            energyLevel: energyLevel || 'medium',
-            strategy: strategy || 'balanced'
+            hypothesis,
+            budgetLimit: Number(budgetLimit) || 2500,
+            timelineWeeks: Number(timelineWeeks) || 6,
+            evidenceMode: evidenceMode || 'balanced',
         });
 
         res.json(result);
@@ -45,36 +45,35 @@ app.post('/api/orchestrate', async (req, res) => {
 });
 
 // POST /api/commit
-// Simulates "committing" to the schedule (calendar sync simulation)
+// Simulates approving the experiment package for lab review
 app.post('/api/commit', async (req, res) => {
-    const { schedule } = req.body;
+    const { artifacts, artifactType } = req.body;
 
-    if (!schedule || !Array.isArray(schedule)) {
-        return res.status(400).json({ error: "Invalid schedule format. Expected an array of tasks." });
+    if (!artifacts || !Array.isArray(artifacts)) {
+        return res.status(400).json({ error: 'Invalid artifacts format. Expected an array.' });
     }
 
     const audit_log = [];
     const commitments = [];
 
-    for (const task of schedule) {
-        // Simulate a calendar API call
+    for (const artifact of artifacts) {
         const delay = Math.floor(Math.random() * 300) + 100;
         await new Promise(resolve => setTimeout(resolve, delay));
 
-        const commitId = `TASK-${String(Math.floor(Math.random() * 9000) + 1000)}`;
-        audit_log.push(`Scheduling "${task.name}" at ${task.startTime || 'TBD'}... Success. Commitment #${commitId}.`);
+        const commitId = `PLAN-${String(Math.floor(Math.random() * 9000) + 1000)}`;
+        const itemName = artifact.name || artifact.item || 'Package item';
+        audit_log.push(`Registering "${itemName}" for ${artifactType || 'lab review'}... Success. Handoff #${commitId}.`);
 
         commitments.push({
             commitId,
-            name: task.name,
-            timeBlock: task.timeBlock,
-            startTime: task.startTime,
-            estimatedMinutes: task.estimatedMinutes,
-            priority: task.priority,
+            name: itemName,
+            phaseWindow: artifact.weekStart && artifact.weekEnd ? `Week ${artifact.weekStart}-${artifact.weekEnd}` : artifactType || 'review',
+            estimatedMinutes: artifact.effortHours ? artifact.effortHours * 60 : artifact.estimatedMinutes,
+            priority: artifact.priority || 'high',
         });
     }
 
-    audit_log.push(`All ${schedule.length} tasks committed to your schedule.`);
+    audit_log.push(`All ${artifacts.length} items approved for scientist review.`);
 
     res.json({
         status: "complete",

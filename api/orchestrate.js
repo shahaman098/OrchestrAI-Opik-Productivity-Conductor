@@ -19,17 +19,17 @@ module.exports = async (req, res) => {
 
     try {
         const body = typeof req.body === 'string' ? JSON.parse(req.body || '{}') : (req.body || {});
-        const { goals, availableHours, energyLevel, strategy } = body;
+        const { hypothesis, budgetLimit, timelineWeeks, evidenceMode } = body;
 
-        if (!goals || !availableHours) {
-            return res.status(400).json({ error: 'Missing required fields: goals, availableHours' });
+        if (!hypothesis) {
+            return res.status(400).json({ error: 'Missing required field: hypothesis' });
         }
 
         const result = await llmService.orchestrate({
-            goals,
-            availableHours: Number(availableHours),
-            energyLevel: energyLevel || 'medium',
-            strategy: strategy || 'balanced',
+            hypothesis,
+            budgetLimit: Number(budgetLimit) || 2500,
+            timelineWeeks: Number(timelineWeeks) || 6,
+            evidenceMode: evidenceMode || 'balanced',
         });
 
         return res.status(200).json(result);
@@ -38,4 +38,3 @@ module.exports = async (req, res) => {
         return res.status(500).json({ error: 'Orchestration failed internally.' });
     }
 };
-
